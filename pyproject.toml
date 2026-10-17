@@ -1,0 +1,77 @@
+[build-system]
+requires = ["hatchling>=1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "precleared"
+version = "0.1.0"
+description = "Cold-email legality check for AI agents: a Python client for the Precleared API, with LangChain, CrewAI, LlamaIndex and OpenAI Agents tools."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.9"
+authors = [{ name = "Precleared", email = "support@precleared.dev" }]
+keywords = [
+  "cold email",
+  "email compliance",
+  "PECR",
+  "GDPR",
+  "CAN-SPAM",
+  "CASL",
+  "ai agents",
+  "langchain",
+  "crewai",
+  "llamaindex",
+  "openai-agents",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Communications :: Email",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Typing :: Typed",
+]
+dependencies = ["httpx>=0.25.0"]
+
+[project.optional-dependencies]
+langchain = ["langchain-core>=0.3.0"]
+crewai = ["crewai>=0.80.0"]
+llamaindex = ["llama-index-core>=0.11.0"]
+openai-agents = ["openai-agents>=0.0.3"]
+all = [
+  "langchain-core>=0.3.0",
+  "crewai>=0.80.0",
+  "llama-index-core>=0.11.0",
+  "openai-agents>=0.0.3",
+]
+
+[project.urls]
+Homepage = "https://precleared.dev"
+Documentation = "https://precleared.dev/docs"
+Repository = "https://github.com/gabrielaoimevbore-beep/precleared-python"
+"API reference" = "https://precleared.dev/openapi.json"
+Support = "mailto:support@precleared.dev"
+
+[dependency-groups]
+dev = ["pytest>=7.0", "anyio>=3.0"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/precleared"]
+
+[tool.hatch.build.targets.sdist]
+# Leading slashes anchor the patterns to the project root.
+include = ["/src/precleared", "/tests", "/README.md", "/PUBLISHING.md", "/LICENSE", "/pyproject.toml"]
+exclude = ["/.venv*", "**/__pycache__", "**/.pytest_cache"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+filterwarnings = ["error::DeprecationWarning:precleared.*"]

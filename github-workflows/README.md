@@ -1,0 +1,1 @@
+These two files belong at .github/workflows/ in the GitHub repository (the folder is written here without the dot because the Claude bridge cannot write into .github/ on this Mac). publish.yml publishes to PyPI through trusted publishing when a GitHub release is published; tests.yml runs the test suite on every push and pull request.
