@@ -58,7 +58,7 @@ Homepage = "https://precleared.dev"
 Documentation = "https://precleared.dev/docs"
 Repository = "https://github.com/gabrielaoimevbore-beep/precleared-python"
 "API reference" = "https://precleared.dev/openapi.json"
-Support = "mailto:support@precleared.dev"
+Issues = "https://github.com/gabrielaoimevbore-beep/precleared-python/issues"
 
 [dependency-groups]
 dev = ["pytest>=7.0", "anyio>=3.0"]
