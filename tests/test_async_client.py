@@ -30,7 +30,7 @@ async def test_async_check_success(make_async_client, recorder):
     assert result.rule == "gb_pecr_corporate_subscriber"
     assert result.receipt_url == "https://precleared.dev/r/cc_rcpt_0123456789ABCDEF"
     assert recorder.last.headers["authorization"] == f"Bearer {KEY}"
-    assert recorder.last.headers["user-agent"] == "precleared-python/0.1.0"
+    assert recorder.last.headers["user-agent"] == "precleared-python/0.1.1"
     assert recorder.last_json()["address_source"] == "given"
     assert client._http.is_closed
 
