@@ -85,7 +85,7 @@ def test_check_sends_expected_body_and_headers_keyless(make_client, recorder):
     assert request.method == "POST"
     assert str(request.url) == "https://precleared.dev/api/v1/check"
     assert request.headers["content-type"] == "application/json"
-    assert request.headers["user-agent"] == "precleared-python/0.1.0" == DEFAULT_USER_AGENT
+    assert request.headers["user-agent"] == "precleared-python/0.1.1" == DEFAULT_USER_AGENT
     assert request.headers["accept"] == "application/json"
     assert "authorization" not in request.headers
 
@@ -494,6 +494,6 @@ def test_public_exports():
     ):
         assert name in precleared.__all__
         assert hasattr(precleared, name)
-    assert precleared.__version__ == "0.1.0"
+    assert precleared.__version__ == "0.1.1"
     for cls in (InvalidRequest, InvalidKey, PaymentRequired, DailyLimit, RateLimited, ReceiptNotFound, ServerError, NetworkError):
         assert issubclass(cls, PreclearedError)
