@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "precleared"
-version = "0.1.0"
+version = "0.1.1"
 description = "Cold-email legality check for AI agents: a Python client for the Precleared API, with LangChain, CrewAI, LlamaIndex and OpenAI Agents tools."
 readme = "README.md"
 license = "MIT"
