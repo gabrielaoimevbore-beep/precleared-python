@@ -64,7 +64,7 @@ class DailyLimit(PreclearedError):
     """HTTP 429 ``daily_limit``: the free daily allowance is used up.
 
     Keyless use allows 10 REST checks a day, shared by everyone on the same
-    network. A free key allows 25 a day.
+    network. A free key allows 100 a day for its first 14 days, then 25 a day.
 
     Attributes:
         get_key_url: Where to get a free key.
