@@ -163,9 +163,9 @@ The API key is never logged, printed or included in an exception.
 ## Allowances and limits
 
 - Without a key: 10 checks a day over the REST API, shared by everyone on the same network.
-- With a free key (`https://precleared.dev/get-key`): 25 checks a day over the REST API.
+- With a free key (`https://precleared.dev/get-key`, no card): 100 checks a day for the first 14 days, then 25 a day over the REST API and 100 over MCP.
 - 60 checks a minute per key. Above that the API returns 429 `rate_limited` with `retry_after`.
-- Days run on UK time. After the free checks, checks use pack credits: a pack is £39 for 2,000 checks, packs never expire and stack on the same key. When no credits are left the API returns 402 with `buy_url`.
+- Days run on UK time. For more, £15 a month keeps 100 checks a day, or buy a pack: £9 for 300 checks (a key's first purchase) or £39 for 2,000. Pack checks are used after the day's free checks, never expire and stack on the same key. When no credits are left the API returns 402 with `buy_url`.
 - A check can take up to 25 seconds when a register or website is slow; the client's default timeout is 30 seconds.
 
 ## Configuration
