@@ -28,7 +28,7 @@ def test_tool_names_and_descriptions_tell_the_model_when_to_call():
     for phrase in (
         "before the first cold email",
         "not already a customer",
-        "UK, US, Canada, Germany, France, Australia, Ireland or the Netherlands",
+        "UK, US, Canada, Germany, France, Australia, Ireland, the Netherlands, Spain, Italy, Latvia or the UAE",
         "Not needed for transactional email",
         "ok_to_email means send, with a footer that meets footer_text",
         "consent_needed and blocked mean do not send",

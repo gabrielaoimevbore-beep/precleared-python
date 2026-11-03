@@ -20,6 +20,7 @@ from conftest import json_response, routed  # noqa: E402
 CHECK_FIELDS = {
     "recipient_email", "recipient_domain", "pitch", "address_source", "existing_customer",
     "pitch_relevant", "sender_country", "recipient_country", "company_number", "suppressed",
+    "company_name", "recipient_name",
 }
 
 

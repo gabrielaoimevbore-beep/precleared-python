@@ -255,6 +255,10 @@ class CheckResult:
         usage: Remaining free checks and pack credits.
         disclaimer: Fixed line: decision support with sources, not legal advice.
         rules_version: Version of the rule set used.
+        email_check: Only when a draft was passed in ``email``: whether its
+            footer meets the rule (``status``, ``requirements``, ``missing``).
+        charged: False when the answer was free: no rule applied, a re-check
+            within a day, or an address on your opt-out list.
         raw: The full response as returned by the API.
     """
 
@@ -269,6 +273,8 @@ class CheckResult:
     usage: Optional[Usage] = None
     disclaimer: Optional[str] = None
     rules_version: Optional[str] = None
+    email_check: Optional[Dict[str, Any]] = None
+    charged: Optional[bool] = None
     raw: Dict[str, Any] = field(default_factory=dict, repr=False)
     base_url: str = field(default=DEFAULT_BASE_URL, repr=False)
 
@@ -305,6 +311,8 @@ class CheckResult:
             usage=Usage.from_dict(data["usage"]) if isinstance(data.get("usage"), dict) else None,
             disclaimer=_opt_str(data.get("disclaimer")),
             rules_version=_opt_str(data.get("rules_version")),
+            email_check=dict(data["email_check"]) if isinstance(data.get("email_check"), dict) else None,
+            charged=bool(data["charged"]) if isinstance(data.get("charged"), bool) else None,
             raw=dict(data),
             base_url=base_url,
         )

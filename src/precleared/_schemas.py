@@ -25,6 +25,8 @@ class PreclearedCheckArgs(BaseModel):
     recipient_country: Optional[str] = Field(default=None, description=_D["recipient_country"])
     company_number: Optional[str] = Field(default=None, description=_D["company_number"])
     suppressed: Optional[bool] = Field(default=None, description=_D["suppressed"])
+    company_name: Optional[str] = Field(default=None, description=_D["company_name"])
+    recipient_name: Optional[str] = Field(default=None, description=_D["recipient_name"])
 
 
 class PreclearedVerifyReceiptArgs(BaseModel):

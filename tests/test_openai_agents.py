@@ -37,6 +37,8 @@ FULL_ARGS = {
     "recipient_country": None,
     "company_number": None,
     "suppressed": None,
+    "company_name": None,
+    "recipient_name": None,
 }
 
 

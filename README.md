@@ -2,7 +2,7 @@
 
 Python client for [Precleared](https://precleared.dev), a cold-email legality check for AI agents.
 
-One call per recipient, before the first cold email, answers: is it legal to send this person a cold or marketing email? Precleared looks the recipient up live (for the UK: Companies House, the domain and the company website) and applies the local rules (UK PECR and GDPR, US CAN-SPAM, Canadian CASL, German UWG, French CNIL guidance and the rules for Australia, Ireland and the Netherlands). It returns a verdict, the rule that decided it with its source, what the footer must include, the next step and a signed receipt.
+One call per recipient, before the first cold email, answers: is it legal to send this person a cold or marketing email? Precleared looks the recipient up live (for the UK: Companies House, the domain and the company website) and applies the local rules (UK PECR and GDPR, US CAN-SPAM, Canadian CASL, German UWG, French CNIL guidance and the rules for Australia, Ireland, the Netherlands, Spain, Italy, Latvia and the United Arab Emirates). It returns a verdict, the rule that decided it with its source, what the footer must include, the next step and a signed receipt.
 
 Decision support with sources, not legal advice.
 
@@ -32,7 +32,7 @@ else:
     print(result.verdict, result.next_step, result.receipt_url)
 ```
 
-`check()` takes the same fields as the API: `recipient_email` or `recipient_domain`, `pitch`, `address_source` (`published`, `bought`, `scraped`, `given` or `unknown`), `sender_country` (default `GB`), `existing_customer`, `pitch_relevant`, `company_number`, `recipient_country`, `default_recipient_country` and `suppressed`.
+`check()` takes the same fields as the API: `recipient_email` or `recipient_domain`, `pitch`, `address_source` (`published`, `bought`, `scraped`, `given` or `unknown`), `sender_country` (`GB`, `US`, `AE` or `CA`, default `GB`), `existing_customer`, `pitch_relevant`, `company_number`, `company_name`, `recipient_name`, `recipient_country`, `default_recipient_country`, `suppressed` and `email`. Pass the draft as `email={"subject": ..., "body": ..., "from_name": ..., "from_email": ...}` and the result's `email_check` says whether its footer has an opt-out, names the sender and, where the rule needs one, carries a postal address; the draft is not stored.
 
 `address_source` defaults to `unknown` and is always sent (the API treats a missing value as `unknown` too). It changes verdicts, so never pass `published` unless the recipient put the address on their website or a public listing for people to contact them.
 
@@ -78,7 +78,7 @@ async with AsyncPrecleared("pc_live_...") as client:
 
 ## Framework tools
 
-Each adapter exposes the same two tools, `precleared_check` and `precleared_verify_receipt`, with descriptions that tell the model when to call them: before the first cold email to anyone who is not already a customer, in the UK, US, Canada, Germany, France, Australia, Ireland or the Netherlands, and not for transactional email. The tools return compact text (verdict, rule, footer_text, next_step, receipt URL) rather than the whole JSON. Pass `to_dict=True` for a dictionary instead. Every factory takes an optional `api_key`.
+Each adapter exposes the same two tools, `precleared_check` and `precleared_verify_receipt`, with descriptions that tell the model when to call them: before the first cold email to anyone who is not already a customer, in the UK, US, Canada, Germany, France, Australia, Ireland, the Netherlands, Spain, Italy, Latvia or the UAE, and not for transactional email. The tools return compact text (verdict, rule, footer_text, next_step, receipt URL) rather than the whole JSON. Pass `to_dict=True` for a dictionary instead. Every factory takes an optional `api_key`.
 
 Example tool output:
 

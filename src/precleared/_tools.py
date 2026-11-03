@@ -24,9 +24,9 @@ VERIFY_TOOL_NAME = "precleared_verify_receipt"
 CHECK_DESCRIPTION = (
     "Check whether a cold or marketing email to one recipient is legal. "
     "Call this once per address before the first cold email to anyone who is not already a customer, "
-    "in the UK, US, Canada, Germany, France, Australia, Ireland or the Netherlands, including every "
-    "address in a lead list. Not needed for transactional email such as invoices or password resets. "
-    "It applies the local rules (UK PECR, US CAN-SPAM, Canadian CASL and others) using live lookups "
+    "in the UK, US, Canada, Germany, France, Australia, Ireland, the Netherlands, Spain, Italy, Latvia or the UAE, "
+    "including every address in a lead list. Not needed for transactional email such as invoices. "
+    "It applies the local rules (UK PECR, US CAN-SPAM, CASL and others) with live lookups "
     "such as UK Companies House. Returns a verdict, the rule that decided it with its source, "
     "footer_text, next_step and a signed receipt id. ok_to_email means send, with a footer that meets "
     "footer_text (a requirement, not wording to paste). consent_needed and blocked mean do not send; "
@@ -57,7 +57,15 @@ ARG_DESCRIPTIONS: Dict[str, str] = {
         "True if the pitch relates to the recipient's role or business, false if it does not. "
         "Leave unset when unsure."
     ),
-    "sender_country": "Two-letter code for where the sender is based, for example GB or US. Default GB.",
+    "sender_country": "Two-letter code for where the sender is based: GB, US, AE or CA. Default GB.",
+    "company_name": (
+        "The recipient's company or organisation name when you know it, for example from a CRM. Helps find "
+        "a UK company at Companies House when the domain alone does not."
+    ),
+    "recipient_name": (
+        "The recipient's full name when you know it. For UK recipients it is matched against the company's "
+        "officers. Precleared does not store it."
+    ),
     "recipient_country": (
         "Two-letter country code for the recipient when you know it. Otherwise Precleared works it out "
         "from the domain, the register and the website."
@@ -177,6 +185,8 @@ class PreclearedTools:
         recipient_country: Optional[str] = None,
         company_number: Optional[str] = None,
         suppressed: Optional[bool] = None,
+        company_name: Optional[str] = None,
+        recipient_name: Optional[str] = None,
     ) -> Union[str, Dict[str, Any]]:
         """Run one check and return compact text (or a dict when ``to_dict``)."""
         try:
@@ -192,6 +202,8 @@ class PreclearedTools:
                 company_number=_blank_to_none(company_number),
                 recipient_country=_blank_to_none(recipient_country),
                 suppressed=coerce_bool(suppressed, "suppressed"),
+                company_name=_blank_to_none(company_name),
+                recipient_name=_blank_to_none(recipient_name),
             )
         except (PreclearedError, ValueError) as exc:
             return self._failure(exc)

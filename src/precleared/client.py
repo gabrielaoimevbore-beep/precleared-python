@@ -91,6 +91,9 @@ def build_check_body(
     recipient_country: Optional[str] = None,
     default_recipient_country: Optional[str] = None,
     suppressed: Optional[bool] = None,
+    company_name: Optional[str] = None,
+    recipient_name: Optional[str] = None,
+    email: Optional[Dict[str, Any]] = None,
     **extra: Any,
 ) -> Dict[str, Any]:
     """Validate the check fields and build the JSON body.
@@ -143,6 +146,29 @@ def build_check_body(
         )
     if suppressed is not None:
         body["suppressed"] = _require_bool(suppressed, "suppressed")
+    for name, value in (("company_name", company_name), ("recipient_name", recipient_name)):
+        if value is not None:
+            if not isinstance(value, str):
+                raise ValueError(f"{name} must be a string")
+            text = value.strip()
+            if text:
+                body[name] = text
+    if email is not None:
+        if not isinstance(email, dict):
+            raise ValueError("email must be a dict with a body, for example {'body': '...'}")
+        draft_body = email.get("body")
+        if not isinstance(draft_body, str) or not draft_body.strip():
+            raise ValueError("email.body is required: the draft's text or HTML, including the footer")
+        draft: Dict[str, str] = {"body": draft_body}
+        for name in ("subject", "from_name", "from_email"):
+            value = email.get(name)
+            if value is None:
+                continue
+            if not isinstance(value, str):
+                raise ValueError(f"email.{name} must be a string")
+            if value.strip():
+                draft[name] = value
+        body["email"] = draft
 
     for key, value in extra.items():
         if value is not None and key not in body:
@@ -394,6 +420,9 @@ class Precleared(_Base):
         recipient_country: Optional[str] = None,
         default_recipient_country: Optional[str] = None,
         suppressed: Optional[bool] = None,
+        company_name: Optional[str] = None,
+        recipient_name: Optional[str] = None,
+        email: Optional[Dict[str, Any]] = None,
         **extra: Any,
     ) -> CheckResult:
         """Check whether a cold email may lawfully be sent to one address.
@@ -407,7 +436,8 @@ class Precleared(_Base):
                 ``scraped``, ``given`` or ``unknown``. Defaults to ``unknown``.
                 Only say ``published`` when the recipient put the address on
                 their own website or a public listing for people to contact them.
-            sender_country: Two-letter code for where you send from. Default ``GB``.
+            sender_country: Two-letter code for where you send from: ``GB``,
+                ``US``, ``AE`` or ``CA``. Default ``GB``.
             existing_customer: True if the recipient has bought from you.
             pitch_relevant: Whether the pitch relates to the recipient's role.
             company_number: UK Companies House number, when you know it.
@@ -415,6 +445,15 @@ class Precleared(_Base):
             default_recipient_country: Used only when the country cannot be
                 worked out from the address, register or website.
             suppressed: True if the address is on your own suppression list.
+            company_name: The recipient's company or organisation name, if you have it.
+            recipient_name: The recipient's full name, if you have it. Used during
+                the check and not stored.
+            email: The draft, if you want the answer to say whether its footer
+                meets the rule: ``{"subject": ..., "body": ..., "from_name": ...,
+                "from_email": ...}`` (``body`` required). The result's
+                ``email_check`` then says whether the footer has an opt-out, names
+                the sender and, where the rule needs one, carries a postal
+                address. The draft is not stored; only its hash goes on the receipt.
             **extra: Forwarded as is, for request fields newer than this client.
 
         Raises:
@@ -433,6 +472,9 @@ class Precleared(_Base):
             recipient_country=recipient_country,
             default_recipient_country=default_recipient_country,
             suppressed=suppressed,
+            company_name=company_name,
+            recipient_name=recipient_name,
+            email=email,
             **extra,
         )
         response = self._request("POST", "/api/v1/check", json=body)
@@ -506,6 +548,9 @@ class AsyncPrecleared(_Base):
         recipient_country: Optional[str] = None,
         default_recipient_country: Optional[str] = None,
         suppressed: Optional[bool] = None,
+        company_name: Optional[str] = None,
+        recipient_name: Optional[str] = None,
+        email: Optional[Dict[str, Any]] = None,
         **extra: Any,
     ) -> CheckResult:
         """Async version of :meth:`Precleared.check`."""
@@ -521,6 +566,9 @@ class AsyncPrecleared(_Base):
             recipient_country=recipient_country,
             default_recipient_country=default_recipient_country,
             suppressed=suppressed,
+            company_name=company_name,
+            recipient_name=recipient_name,
+            email=email,
             **extra,
         )
         response = await self._request("POST", "/api/v1/check", json=body)

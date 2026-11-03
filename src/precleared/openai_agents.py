@@ -45,6 +45,8 @@ _CHECK_ARGS = [
     "recipient_country",
     "company_number",
     "suppressed",
+    "company_name",
+    "recipient_name",
 ]
 
 
@@ -60,6 +62,8 @@ def _check_tool(runner: PreclearedTools) -> FunctionTool:
         recipient_country: Optional[str] = None,
         company_number: Optional[str] = None,
         suppressed: Optional[bool] = None,
+        company_name: Optional[str] = None,
+        recipient_name: Optional[str] = None,
     ) -> Union[str, Dict[str, Any]]:
         return runner.check(
             recipient_email=recipient_email,
@@ -72,6 +76,8 @@ def _check_tool(runner: PreclearedTools) -> FunctionTool:
             recipient_country=recipient_country,
             company_number=company_number,
             suppressed=suppressed,
+            company_name=company_name,
+            recipient_name=recipient_name,
         )
 
     precleared_check.__doc__ = google_docstring(

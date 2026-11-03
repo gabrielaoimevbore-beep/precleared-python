@@ -85,7 +85,7 @@ def test_check_sends_expected_body_and_headers_keyless(make_client, recorder):
     assert request.method == "POST"
     assert str(request.url) == "https://precleared.dev/api/v1/check"
     assert request.headers["content-type"] == "application/json"
-    assert request.headers["user-agent"] == "precleared-python/0.1.1" == DEFAULT_USER_AGENT
+    assert request.headers["user-agent"] == "precleared-python/0.2.0" == DEFAULT_USER_AGENT
     assert request.headers["accept"] == "application/json"
     assert "authorization" not in request.headers
 
@@ -494,6 +494,37 @@ def test_public_exports():
     ):
         assert name in precleared.__all__
         assert hasattr(precleared, name)
-    assert precleared.__version__ == "0.1.1"
+    assert precleared.__version__ == "0.2.0"
     for cls in (InvalidRequest, InvalidKey, PaymentRequired, DailyLimit, RateLimited, ReceiptNotFound, ServerError, NetworkError):
         assert issubclass(cls, PreclearedError)
+
+
+
+def test_check_sends_company_name_recipient_name_and_draft_email(make_client, recorder):
+    payload = {
+        "verdict": "ok_to_email",
+        "email_check": {"status": "fail", "country": "US", "requirements": [], "missing": ["postal_address"], "footer_text": None, "note": "Presence checks for US."},
+        "charged": True,
+    }
+    client = make_client(routed(check=json_response(200, payload)))
+    result = client.check(
+        "sales@precleared.dev",
+        sender_country="ca",
+        company_name=" Acme Ltd ",
+        recipient_name="Jane Smith",
+        email={"subject": "Hi", "body": "Hello {{unsubscribe}}", "from_name": "Sam", "from_email": ""},
+    )
+    body = recorder.last_json()
+    assert body["sender_country"] == "CA"
+    assert body["company_name"] == "Acme Ltd"
+    assert body["recipient_name"] == "Jane Smith"
+    assert body["email"] == {"subject": "Hi", "body": "Hello {{unsubscribe}}", "from_name": "Sam"}
+    assert result.email_check == payload["email_check"]
+    assert result.charged is True
+
+
+def test_check_rejects_a_draft_without_a_body(make_client, recorder):
+    client = make_client()
+    with pytest.raises(ValueError, match="email.body is required"):
+        client.check("a@b.co", email={"subject": "Hi"})
+    assert recorder.requests == []
